@@ -26,9 +26,10 @@ def _log(
     level: int,
     msg: Any,
     args: _ArgsType,
-    exc_info: Optional[_ExcInfoType] = ...,  # type:ignore
-    extra: Optional[Dict[str, Any]] = ...,  # type:ignore
-    stack_info: bool = ...,  # type:ignore
+    exc_info: Optional[_ExcInfoType] = None,  # type:ignore
+    extra: Optional[Dict[str, Any]] = None,  # type:ignore
+    stack_info: bool = None,  # type:ignore
+    stack_level: int = 1,
 ) -> None:
     __original_log(self, level, msg, args, exc_info, extra, stack_info)
     if TYPE_CHECKING:

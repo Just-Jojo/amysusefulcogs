@@ -22,8 +22,12 @@ if TYPE_CHECKING:
 
     wraps = lambda t: t  # noqa
 
+    DTyping = DPYDeferTyping[BotT]
+
 else:
     from functools import wraps
+
+    DTyping = DPYDeferTyping
 
 
 __all__ = ("Typing",)
@@ -56,7 +60,7 @@ class Typing(DPYTyping):
             log.debug("Ignoring error in `typing.__aexit__`", exc_info=try_exc)
 
 
-class DeferTyping(DPYDeferTyping[BotT]):
+class DeferTyping(DTyping):
     async def do_defer(self) -> None:
         try:
             await super().do_defer()
@@ -67,7 +71,7 @@ class DeferTyping(DPYDeferTyping[BotT]):
 @wraps(commands.Context.typing)
 def context_typing(
     self: commands.Context, *, ephemeral: bool = False
-) -> Union[Typing, DeferTyping[BotT]]:
+) -> Union[Typing, DTyping]:
     if self.interaction is None:
         return Typing(self)
     return DeferTyping(self, ephemeral=ephemeral)

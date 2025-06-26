@@ -106,7 +106,6 @@ class AmyUtils(commands.Cog):
         self, *, requester: Requester, user_id: int
     ) -> None:
         return
-        super().red_delete_data_for_user
 
     async def red_get_data_for_user(self, *, user_id: int) -> Dict[str, Any]:
         # I don't think this is ever gonna get implimented ;-;
@@ -173,6 +172,22 @@ class AmyUtils(commands.Cog):
         self._logging_enabled ^= True
         await self.config.logging_enabled.set(self._logging_enabled)
         await ctx.tick()
+        if self._logging_enabled:
+            logging_setup(self.bot)
+        else:
+            logging_teardown()
+
+    @amy_utils.command(name="loggingchannel", aliases=("lchannel",))
+    async def logging_channel(
+        self, ctx: commands.Context, channel: Union[
+            discord.TextChannel,
+            discord.Thread
+        ]
+    ) -> None:
+        """Sets the channel for logging stuff to"""
+        await self.config.log_channel_id.set(channel.id)
+        self._log_channel = channel
+        await ctx.tick()
 
     @amy_utils.command(name="logginglevel")
     async def logging_level(self, ctx: commands.Context, level: LoggingLevelConverter) -> None:
@@ -216,7 +231,7 @@ class AmyUtils(commands.Cog):
         if not name.startswith("red"):
             # TODO Maybe add some stuff for discord and other things
             return
-        if self._cached_level is LoggingLevel.NONE or level != self._cached_level:
+        if self._cached_level is LoggingLevel.NONE or level != self._cached_level.value:
             return
         display_name = " ".join(_.capitalize() for _ in list(name.split("."))[1:])
         kwargs: SendingKwargs
@@ -226,6 +241,7 @@ class AmyUtils(commands.Cog):
                 embed.add_field(
                     name="Exception, see your logs for more", value=exc_info.__class__.__name__
                 )
+            embed.add_field(name="Level", value=LoggingLevel(level).name)
             embed.set_footer(text="Amy's Utils")
             kwargs = {"content": None, "embed": embed}
         else:
@@ -237,6 +253,7 @@ class AmyUtils(commands.Cog):
                 content += (
                     f"**Exception, see your logs for more**  {exc_info.__class__.__name__}\n\n"
                 )
+            content += f"**Level:**  {LoggingLevel(level).name}"
             content += "-# Amy's Utils"
             kwargs = {"content": content, "embed": None}
         await self._log_channel.send(**kwargs)  # type:ignore
