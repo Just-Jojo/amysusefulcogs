@@ -6,12 +6,13 @@ from __future__ import annotations
 import functools
 import logging
 from types import TracebackType
-from typing import Any, Callable, Dict, Mapping, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, Mapping, Optional, Tuple, Type, Union
 
 from redbot.core.bot import Red
 
+
 __bot: Optional[Red] = None
-__original_log: Callable[Any, Any] = logging.Logger._log
+__original_log: Callable = logging.Logger._log
 _SysExcInfoType = Union[
     Tuple[Type[BaseException], BaseException, TracebackType, None], Tuple[None, None, None]
 ]
@@ -25,11 +26,13 @@ def _log(
     level: int,
     msg: Any,
     args: _ArgsType,
-    exc_info: Optional[_ExcInfoType] = ...,
-    extra: Optional[Dict[str, Any]] = ...,
-    stack_info: bool = ...,
+    exc_info: Optional[_ExcInfoType] = ...,  # type:ignore
+    extra: Optional[Dict[str, Any]] = ...,  # type:ignore
+    stack_info: bool = ...,  # type:ignore
 ) -> None:
     __original_log(self, level, msg, args, exc_info, extra, stack_info)
+    if TYPE_CHECKING:
+        assert __bot is not None
     __bot.dispatch("logging", self.name, level, msg, args, exc_info)
 
 

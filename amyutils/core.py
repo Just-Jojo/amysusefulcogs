@@ -6,7 +6,7 @@ from __future__ import annotations
 import asyncio
 import enum
 import logging
-from typing import TYPE_CHECKING, Any, Dict, Optional, TypedDict, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, TypedDict, TypeVar, Union
 
 import discord
 from discord.abc import Messageable
@@ -25,6 +25,7 @@ log = logging.getLogger("red.amysusefulcogs.amyutils")
 ORIGINAL_MESSAGEABLE_TYPING = Messageable.typing
 ORIGINAL_CONTEXT_TYPING = commands.Context.typing
 T = TypeVar("T")
+Requester = Literal["discord_deleted_user", "owner", "user", "user_strict"]
 
 
 class LoggingLevel(enum.Enum):
@@ -92,7 +93,7 @@ class AmyUtils(commands.Cog):
         self._logging_enabled: bool = False
         self._cached_level: LoggingLevel = LoggingLevel.NONE
         self._log_channel: Optional[discord.abc.Messageable] = None
-        self._task: asyncio.Task = self.bot.loop.create_task(self.start_up())
+        self._task: asyncio.Task[None] = self.bot.loop.create_task(self.start_up())
 
     def format_help_for_context(self, ctx: commands.Context) -> str:
         return (
@@ -101,10 +102,13 @@ class AmyUtils(commands.Cog):
             f"**Version:**\t{__version__}"
         )
 
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+    async def red_delete_data_for_user(
+        self, *, requester: Requester, user_id: int
+    ) -> None:
         return
+        super().red_delete_data_for_user
 
-    async def red_get_data_for_user(self, *args, **kwargs) -> dict:
+    async def red_get_data_for_user(self, *, user_id: int) -> Dict[str, Any]:
         # I don't think this is ever gonna get implimented ;-;
         return {}
 
