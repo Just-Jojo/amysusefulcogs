@@ -1,0 +1,20 @@
+{
+    "name": "amyutils",
+    "short": "Amy's various utilities",
+    "description": "Amy's various utilities",
+    "end_user_data_statement": "This cog does not save any end user data",
+    "install_msg": "Thanks for installing Amy's utilities. These are some random utils that I wanted for my bot. You won't get any help with this, as it's mostly just for me, but if you find some errors I'd be fine if you let me know",
+    "author": [
+        "Amy (jojo7791)"
+    ],
+    "required_cogs": {},
+    "requirements": [],
+    "tags": [
+        "utils",
+        "utilities"
+    ],
+    "min_bot_version": "3.5.0",
+    "hidden": false,
+    "disabled": false,
+    "type": "COG"
+}
