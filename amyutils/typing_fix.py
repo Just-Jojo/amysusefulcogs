@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import logging
-from functools import wraps
 from typing import TYPE_CHECKING
 
 import discord
@@ -21,6 +20,11 @@ if TYPE_CHECKING:
 
     BE = TypeVar("BE", bound="BaseException")
 
+    wraps = lambda t: t  # noqa
+
+else:
+    from functools import wraps
+
 
 __all__ = ("Typing",)
 
@@ -29,7 +33,7 @@ log = logging.getLogger("red.amyscogs.amyutils.typing")
 
 class Typing(DPYTyping):
     @wraps(DPYTyping.wrapped_typer)
-    async def wrapped_typer(self) -> None:
+    async def wrapped_typer(self) -> None:  # type:ignore
         try:
             await super().wrapped_typer()
         except discord.HTTPException as exc:
@@ -52,7 +56,7 @@ class Typing(DPYTyping):
             log.debug("Ignoring error in `typing.__aexit__`", exc_info=try_exc)
 
 
-class DeferTyping(DPYDeferTyping):
+class DeferTyping(DPYDeferTyping[BotT]):
     async def do_defer(self) -> None:
         try:
             await super().do_defer()
