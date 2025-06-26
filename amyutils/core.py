@@ -175,7 +175,7 @@ class AmyUtils(commands.Cog):
         await ctx.tick()
 
     @amy_utils.command(name="logginglevel")
-    async def logging_level(self, ctx: commands.Context, level: LoggingLevel) -> None:
+    async def logging_level(self, ctx: commands.Context, level: LoggingLevelConverter) -> None:
         """Set level to watch for to send to the log channel"""
         await self.config.logging_level.set(level.value)
         self._cached_level = level
