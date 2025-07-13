@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
     BE = TypeVar("BE", bound="BaseException")
 
-    wraps = lambda t: t  # noqa
+    wraps = lambda t: lambda f: f  # noqa
 
     DTyping = DPYDeferTyping[BotT]
 
@@ -37,7 +37,7 @@ log = logging.getLogger("red.amyscogs.amyutils.typing")
 
 class Typing(DPYTyping):
     @wraps(DPYTyping.wrapped_typer)
-    async def wrapped_typer(self) -> None:  # type:ignore
+    async def wrapped_typer(self) -> None:
         try:
             await super().wrapped_typer()
         except discord.HTTPException as exc:
