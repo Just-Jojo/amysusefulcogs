@@ -13,6 +13,7 @@ from discord.abc import Messageable
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.utils.chat_formatting import box
+from typing_extensions import NotRequired
 
 from .constants import __author__, __version__
 from .logging import _ArgsType, _ExcInfoType, logging_setup, logging_teardown
@@ -60,8 +61,8 @@ class ConfigStructure(TypedDict):
 class SendingKwargs(TypedDict):
     """Kwargs so I can send using await ctx.send(**kwargs) and mypy won't complain"""
 
-    content: Optional[str]
-    embed: Optional[discord.Embed]
+    content: NotRequired[str]
+    embed: NotRequired[discord.Embed]
 
 
 config_structure: ConfigStructure = {
@@ -155,9 +156,9 @@ class AmyUtils(commands.Cog):
         kwargs: SendingKwargs
         if isinstance(sender, str):
             sender += f"\n\n-# Amy's Utils - Version {__version__}"
-            kwargs = {"content": sender, "embed": None}
+            kwargs = {"content": sender}
         else:
-            kwargs = {"content": None, "embed": sender}
+            kwargs = {"embed": sender}
         await ctx.send(**kwargs)
         await ctx.send_help()
 
@@ -243,7 +244,7 @@ class AmyUtils(commands.Cog):
                 )
             embed.add_field(name="Level", value=LoggingLevel(level).name)
             embed.set_footer(text="Amy's Utils")
-            kwargs = {"content": None, "embed": embed}
+            kwargs = {"embed": embed}
         else:
             content = (
                 f"**{display_name}**\n\n"
@@ -255,5 +256,5 @@ class AmyUtils(commands.Cog):
                 )
             content += f"**Level:**  {LoggingLevel(level).name}"
             content += "-# Amy's Utils"
-            kwargs = {"content": content, "embed": None}
-        await self._log_channel.send(**kwargs)  # type:ignore
+            kwargs = {"content": content}
+        await self._log_channel.send(**kwargs)
